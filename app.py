@@ -9,13 +9,12 @@ app.secret_key = os.environ.get("SECRET_KEY", "ems_secret_key_2026")
 # ── Database Connection ──────────────────────────────────────
 def get_db():
     return mysql.connector.connect(
-        host=os.environ.get("DB_HOST", "localhost"),
-        user=os.environ.get("DB_USER", "root"),
-        password=os.environ.get("DB_PASSWORD", ""),
-        database=os.environ.get("DB_NAME", "event_management"),
-        port=int(os.environ.get("DB_PORT", 3306))
+        host="mysql.railway.internal",
+        user="root",
+        password="syKyETjtreedYyzvfkbBtjzchkJdiktv",
+        database="railway",
+        port=3306
     )
-
 # ── Login Required ───────────────────────────────────────────
 def login_required(f):
     @wraps(f)
