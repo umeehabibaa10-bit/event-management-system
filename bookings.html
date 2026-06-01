@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings — EMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --burgundy:      #7B2D42;
+            --burgundy-dark: #5A1E30;
+            --burgundy-mid:  #9B3D55;
+            --rose:          #C4849A;
+            --blush:         #F5E6EA;
+            --sage:          #7A9E7E;
+            --sage-light:    #E4EFE4;
+            --gold:          #C9A96E;
+            --gold-light:    #F0E4CC;
+            --lavender:      #B8A8D0;
+            --lavender-light:#F0EBF8;
+            --cream:         #FDFAF7;
+            --text-dark:     #3A1A24;
+            --text-mid:      #7B4A58;
+            --text-light:    #AA8090;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 255px;
+            min-height: 100vh;
+            background: var(--burgundy-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 0 20px;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(74,15,28,0.2);
+            overflow-y: auto;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(201,169,110,0.07) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(196,132,154,0.07) 0%, transparent 50%);
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            padding: 0 20px 18px;
+            border-bottom: 1px solid rgba(201,169,110,0.2);
+            width: 100%;
+        }
+
+        .sidebar-logo .cursive {
+            font-family: 'Corinthia', cursive;
+            font-size: 38px;
+            color: var(--gold);
+            line-height: 1.1;
+            display: block;
+            font-weight: 700;
+        }
+
+        .sidebar-logo .sub {
+            font-size: 9px;
+            letter-spacing: 4px;
+            color: rgba(240,228,204,0.45);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 0 12px;
+            border-bottom: 1px solid rgba(201,169,110,0.12);
+            width: 100%;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose), var(--burgundy-mid));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            border: 2px solid rgba(201,169,110,0.35);
+            margin-bottom: 6px;
+        }
+
+        .sidebar-username {
+            font-size: 11px; color: var(--gold-light);
+            font-weight: 300; letter-spacing: 1px;
+        }
+
+        .nav-section { width: 100%; padding: 4px 16px; }
+
+        .nav-label {
+            font-size: 8px; letter-spacing: 3px;
+            color: rgba(201,169,110,0.35);
+            text-transform: uppercase;
+            padding: 0 10px; margin: 8px 0 4px;
+        }
+
+        .nav-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px; border-radius: 10px;
+            text-decoration: none;
+            color: rgba(240,228,204,0.6);
+            font-size: 13px;
+            transition: all 0.25s ease;
+            margin-bottom: 2px;
+        }
+
+        .nav-link .icon {
+            width: 30px; height: 30px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; background: rgba(255,255,255,0.05);
+            transition: all 0.25s; flex-shrink: 0;
+        }
+
+        .nav-link:hover .icon, .nav-link.active .icon { background: rgba(201,169,110,0.18); }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(201,169,110,0.1);
+            color: var(--gold-light);
+            transform: translateX(3px);
+        }
+
+        .sidebar-footer {
+            margin-top: auto; padding: 14px 20px 0;
+            text-align: center; font-size: 10px;
+            color: rgba(201,169,110,0.22); letter-spacing: 1px;
+            border-top: 1px solid rgba(201,169,110,0.1); width: 100%;
+        }
+
+        .main { margin-left: 255px; flex: 1; display: flex; flex-direction: column; }
+
+        .page-header {
+            background: linear-gradient(135deg, #FDF4EE 0%, #F9EDF2 50%, #F2EDF8 100%);
+            padding: 40px 55px;
+            border-bottom: 1px solid rgba(196,132,154,0.15);
+        }
+
+        .page-header .tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(123,45,66,0.07);
+            border: 1px solid rgba(123,45,66,0.12);
+            color: var(--burgundy); font-size: 10px;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 5px 14px; border-radius: 20px; margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-family: 'Corinthia', cursive;
+            font-size: 60px; font-weight: 700;
+            color: var(--burgundy-dark);
+            line-height: 1; margin-bottom: 4px;
+        }
+
+        .page-header p { font-size: 12px; color: var(--text-light); letter-spacing: 1px; }
+
+        .content { padding: 35px 55px 55px; }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--burgundy);
+            color: #FDF0F3;
+            padding: 10px 22px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .add-btn:hover {
+            background: var(--burgundy-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(123,45,66,0.25);
+        }
+
+        .table-wrap {
+            background: white; border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(123,45,66,0.07);
+            border: 1px solid rgba(196,132,154,0.15);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        thead { background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy)); }
+
+        th {
+            padding: 14px 18px; text-align: left;
+            font-size: 11px; font-weight: 500;
+            color: rgba(240,228,204,0.85);
+            letter-spacing: 1.5px; text-transform: uppercase;
+        }
+
+        td {
+            padding: 13px 18px; font-size: 13px;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--blush);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #FDF7F9; }
+
+        .id-badge {
+            display: inline-block;
+            background: var(--blush); color: var(--burgundy);
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 500;
+        }
+
+        .Confirmed  { background: var(--sage-light); color: #3A6E3E; }
+        .Pending    { background: var(--gold-light);  color: #7A5A20; }
+        .Cancelled  { background: #FCE4EE;            color: #A0305A; }
+
+        footer {
+            background: var(--burgundy-dark);
+            color: rgba(240,228,204,0.3);
+            text-align: center; padding: 16px;
+            font-size: 10px; letter-spacing: 2px; margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span class="cursive">Event Management</span>
+            <span class="sub">System · 2026</span>
+        </div>
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">🌸</div>
+            <div class="sidebar-username">Ume Habiba</div>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Main</div>
+            <a href="/" class="nav-link"><div class="icon">🏠</div> Home</a>
+            <a href="/customers" class="nav-link"><div class="icon">👥</div> Customers</a>
+            <a href="/events" class="nav-link"><div class="icon">🎪</div> Events</a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Manage</div>
+            <a href="/bookings" class="nav-link active"><div class="icon">📋</div> Bookings</a>
+            <a href="/payments" class="nav-link"><div class="icon">💳</div> Payments</a>
+            <a href="/services" class="nav-link"><div class="icon">🛎️</div> Services</a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Actions</div>
+            <a href="/add-booking" class="nav-link"><div class="icon">➕</div> Add Booking</a>
+        </div>
+        <div class="sidebar-footer">BCS 4th Semester &nbsp;·&nbsp; Group A</div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="tag">📋 All Bookings</div>
+            <h1>Bookings</h1>
+            <p>All customer bookings and their current status</p>
+        </div>
+
+        <div class="content">
+            <a href="/add-booking" class="add-btn">➕ Add New Booking</a>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Event</th>
+                            <th>Booking Date</th>
+                            <th>Status</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td><span class="id-badge">#{{ booking.BookingID }}</span></td>
+                            <td>{{ booking.FullName }}</td>
+                            <td>{{ booking.EventName }}</td>
+                            <td>{{ booking.BookingDate }}</td>
+                            <td>
+                                <span class="status-badge {{ booking.Status }}">
+                                    {{ booking.Status }}
+                                </span>
+                            </td>
+                            <td>Rs. {{ booking.TotalAmount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            Event Management System &nbsp;·&nbsp; Ume Habiba &nbsp;·&nbsp; BCS 4th Semester &nbsp;·&nbsp; 2026
+        </footer>
+    </main>
+
+</body>
+</html>

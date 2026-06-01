@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Event Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --burgundy:      #7B2D42;
+            --burgundy-dark: #5A1E30;
+            --burgundy-mid:  #9B3D55;
+            --rose:          #C4849A;
+            --blush:         #F5E6EA;
+            --gold:          #C9A96E;
+            --gold-light:    #F0E4CC;
+            --lavender:      #B8A8D0;
+            --lavender-light:#F0EBF8;
+            --sage:          #7A9E7E;
+            --sage-light:    #E4EFE4;
+            --cream:         #FDFAF7;
+            --text-dark:     #3A1A24;
+            --text-mid:      #7B4A58;
+            --text-light:    #AA8090;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FDF4EE 0%, #F9EDF2 40%, #F2EDF8 70%, #EDF2F8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background circles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -100px; left: -100px;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(196,132,154,0.12), transparent 70%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px; right: -100px;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(184,168,208,0.12), transparent 70%);
+            pointer-events: none;
+        }
+
+        .extra-circle {
+            position: fixed;
+            top: 50%; left: 60%;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,169,110,0.06), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Main container */
+        .container {
+            display: flex;
+            width: 900px;
+            min-height: 560px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(90,30,48,0.18),
+                        0 8px 25px rgba(90,30,48,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── LEFT PANEL ── */
+        .left {
+            width: 42%;
+            background: linear-gradient(155deg, var(--burgundy-dark) 0%, #7B2D42 50%, #9B3D55 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left::before {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: rgba(201,169,110,0.07);
+        }
+
+        .left::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -80px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: rgba(196,132,154,0.07);
+        }
+
+        .left-top { position: relative; z-index: 1; }
+
+        .brand-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .brand-name {
+            font-family: 'Corinthia', cursive;
+            font-size: 50px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+            display: block;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            letter-spacing: 5px;
+            color: rgba(240,228,204,0.45);
+            text-transform: uppercase;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .left-divider {
+            width: 50px; height: 1px;
+            background: rgba(201,169,110,0.25);
+            margin: 25px auto;
+            position: relative; z-index: 1;
+        }
+
+        .left-desc {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px;
+            color: rgba(242,221,226,0.65);
+            line-height: 1.9;
+            font-style: italic;
+            font-weight: 300;
+            position: relative; z-index: 1;
+            margin-bottom: 28px;
+        }
+
+        /* Demo credentials box */
+        .demo-box {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(201,169,110,0.2);
+            border-radius: 14px;
+            padding: 18px 22px;
+            position: relative; z-index: 1;
+            width: 100%;
+            text-align: left;
+        }
+
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .demo-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        .demo-title {
+            font-size: 9px;
+            letter-spacing: 2.5px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .demo-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(201,169,110,0.1);
+        }
+
+        .demo-row:last-child { border-bottom: none; }
+
+        .demo-key {
+            font-size: 11px;
+            color: rgba(240,228,204,0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .demo-val {
+            font-size: 12px;
+            color: var(--gold-light);
+            font-weight: 500;
+            background: rgba(201,169,110,0.12);
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Feature tags */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 22px;
+            justify-content: center;
+            position: relative; z-index: 1;
+        }
+
+        .feature-tag {
+            font-size: 10px;
+            color: rgba(240,228,204,0.5);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(201,169,110,0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .right {
+            width: 58%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 55px 50px;
+        }
+
+        .welcome-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--blush);
+            border: 1px solid rgba(196,132,154,0.25);
+            color: var(--burgundy);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+            width: fit-content;
+        }
+
+        .right h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .right .subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+            font-weight: 300;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--burgundy);
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            border: 1.5px solid rgba(196,132,154,0.25);
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--text-dark);
+            background: var(--cream);
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--rose);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(196,132,154,0.1);
+            background: white;
+        }
+
+        input::placeholder { color: #CCC; }
+
+        /* Error */
+        .error-msg {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #FCE4EE;
+            border: 1px solid rgba(160,48,90,0.2);
+            color: #A0305A;
+            padding: 11px 15px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Login button */
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy-mid));
+            color: #FDF0F3;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1.5px;
+            font-family: 'DM Sans', sans-serif;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, var(--burgundy), var(--burgundy-mid));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(90,30,48,0.25);
+        }
+
+        .login-btn:active { transform: translateY(0); }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        .divider-line {
+            flex: 1; height: 1px;
+            background: rgba(196,132,154,0.15);
+        }
+
+        .divider-text {
+            font-size: 11px;
+            color: var(--text-light);
+            letter-spacing: 1px;
+        }
+
+        /* Info badges */
+        .info-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--cream);
+            border: 1px solid rgba(196,132,154,0.15);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: var(--text-mid);
+            flex: 1;
+        }
+
+        .badge-icon { font-size: 14px; }
+
+        /* Footer */
+        .right-footer {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 10px;
+            color: rgba(170,128,144,0.5);
+            letter-spacing: 1.5px;
+            border-top: 1px solid var(--blush);
+            padding-top: 18px;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .container { animation: fadeUp 0.6s ease; }
+    </style>
+</head>
+<body>
+
+    <div class="extra-circle"></div>
+
+    <div class="container">
+
+        <!-- LEFT PANEL -->
+        <div class="left">
+            <div class="left-top">
+                <span class="brand-icon">🌸</span>
+                <span class="brand-name">Event Management</span>
+                <span class="brand-sub">System · 2026</span>
+            </div>
+
+            <div class="left-divider"></div>
+
+            <p class="left-desc">
+                Plan, manage and track your events,
+                bookings, payments and services —
+                all in one elegant place.
+            </p>
+
+            <div class="demo-box">
+                <div class="demo-header">
+                    <div class="demo-dot"></div>
+                    <div class="demo-title">Demo Credentials</div>
+                </div>
+                <div class="demo-row">
+                    <span class="demo-key">Username</span>
+                    <span class="demo-val">admin</span>
+                </div>
+                <div class="demo-row">
+                    <span class="demo-key">Password</span>
+                    <span class="demo-val">admin123</span>
+                </div>
+            </div>
+
+            <div class="features">
+                <span class="feature-tag">🗄️ MySQL</span>
+                <span class="feature-tag">🐍 Flask</span>
+                <span class="feature-tag">🎨 HTML/CSS</span>
+                <span class="feature-tag">📊 100+ Records</span>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right">
+
+            <div class="welcome-tag">✦ Welcome Back</div>
+
+            <h2>Sign In to EMS</h2>
+            <p class="subtitle">Enter your credentials to access your dashboard</p>
+
+            <!-- Error message -->
+            {% if error %}
+            <div class="error-msg">
+                ⚠️ {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/login">
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">👤</span>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Enter your username"
+                            required
+                            autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Sign In &nbsp; →
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">SYSTEM INFO</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <div class="info-badges">
+                <div class="badge">
+                    <span class="badge-icon">🗄️</span>
+                    <span>MySQL Database</span>
+                </div>
+                <div class="badge">
+                    <span class="badge-icon">🐍</span>
+                    <span>Flask Backend</span>
+                </div>
+                <div class="badge">
+                    <span class="badge-icon">📊</span>
+                    <span>6 Tables · 520 Rows</span>
+                </div>
+            </div>
+
+            <div class="right-footer">
+                Ume Habiba &nbsp;·&nbsp; BCS 4th Semester, Group-A &nbsp;·&nbsp; 2026
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
