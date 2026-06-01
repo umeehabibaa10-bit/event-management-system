@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer — EMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --burgundy:      #7B2D42;
+            --burgundy-dark: #5A1E30;
+            --burgundy-mid:  #9B3D55;
+            --rose:          #C4849A;
+            --blush:         #F5E6EA;
+            --sage:          #7A9E7E;
+            --gold:          #C9A96E;
+            --gold-light:    #F0E4CC;
+            --lavender:      #B8A8D0;
+            --lavender-light:#F0EBF8;
+            --cream:         #FDFAF7;
+            --text-dark:     #3A1A24;
+            --text-light:    #AA8090;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 255px;
+            min-height: 100vh;
+            background: var(--burgundy-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 0 20px;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(74,15,28,0.2);
+            overflow-y: auto;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(201,169,110,0.07) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(196,132,154,0.07) 0%, transparent 50%);
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            padding: 0 20px 18px;
+            border-bottom: 1px solid rgba(201,169,110,0.2);
+            width: 100%;
+        }
+
+        .sidebar-logo .cursive {
+            font-family: 'Corinthia', cursive;
+            font-size: 38px; color: var(--gold);
+            line-height: 1.1; display: block; font-weight: 700;
+        }
+
+        .sidebar-logo .sub {
+            font-size: 9px; letter-spacing: 4px;
+            color: rgba(240,228,204,0.45);
+            text-transform: uppercase; margin-top: 2px;
+        }
+
+        .sidebar-profile {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 14px 0 12px;
+            border-bottom: 1px solid rgba(201,169,110,0.12);
+            width: 100%; margin-bottom: 6px;
+        }
+
+        .sidebar-avatar {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose), var(--burgundy-mid));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; border: 2px solid rgba(201,169,110,0.35);
+            margin-bottom: 6px;
+        }
+
+        .sidebar-username {
+            font-size: 11px; color: var(--gold-light);
+            font-weight: 300; letter-spacing: 1px;
+        }
+
+        .nav-section { width: 100%; padding: 4px 16px; }
+
+        .nav-label {
+            font-size: 8px; letter-spacing: 3px;
+            color: rgba(201,169,110,0.35);
+            text-transform: uppercase; padding: 0 10px; margin: 8px 0 4px;
+        }
+
+        .nav-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px; border-radius: 10px;
+            text-decoration: none; color: rgba(240,228,204,0.6);
+            font-size: 13px; transition: all 0.25s ease; margin-bottom: 2px;
+        }
+
+        .nav-link .icon {
+            width: 30px; height: 30px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; background: rgba(255,255,255,0.05);
+            transition: all 0.25s; flex-shrink: 0;
+        }
+
+        .nav-link:hover .icon, .nav-link.active .icon { background: rgba(201,169,110,0.18); }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(201,169,110,0.1);
+            color: var(--gold-light); transform: translateX(3px);
+        }
+
+        .sidebar-footer {
+            margin-top: auto; padding: 14px 20px 0;
+            text-align: center; font-size: 10px;
+            color: rgba(201,169,110,0.22); letter-spacing: 1px;
+            border-top: 1px solid rgba(201,169,110,0.1); width: 100%;
+        }
+
+        .main { margin-left: 255px; flex: 1; display: flex; flex-direction: column; }
+
+        .page-header {
+            background: linear-gradient(135deg, #FDF4EE 0%, #F9EDF2 50%, #F2EDF8 100%);
+            padding: 40px 55px;
+            border-bottom: 1px solid rgba(196,132,154,0.15);
+        }
+
+        .page-header .tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(201,169,110,0.12);
+            border: 1px solid rgba(201,169,110,0.25);
+            color: #7A5A20; font-size: 10px;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 5px 14px; border-radius: 20px; margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-family: 'Corinthia', cursive;
+            font-size: 60px; font-weight: 700;
+            color: var(--burgundy-dark); line-height: 1; margin-bottom: 4px;
+        }
+
+        .page-header p { font-size: 12px; color: var(--text-light); letter-spacing: 1px; }
+
+        .content {
+            padding: 40px 55px 55px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 560px;
+            box-shadow: 0 8px 30px rgba(123,45,66,0.08);
+            border: 1px solid rgba(196,132,154,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--rose), var(--lavender));
+        }
+
+        .form-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px; color: var(--text-dark);
+            font-weight: 600; margin-bottom: 6px;
+        }
+
+        .form-sub {
+            font-size: 12px; color: var(--text-light);
+            margin-bottom: 28px; letter-spacing: 0.5px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        label {
+            display: block; font-size: 11px;
+            font-weight: 500; color: var(--burgundy);
+            margin-bottom: 7px; letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 11px 15px;
+            border: 1.5px solid rgba(196,132,154,0.25);
+            border-radius: 10px;
+            font-size: 13px; color: var(--text-dark);
+            background: var(--cream);
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s;
+        }
+
+        textarea { height: 90px; resize: none; }
+
+        input:focus, textarea:focus {
+            border-color: var(--rose);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(196,132,154,0.12);
+            background: white;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            background: linear-gradient(135deg, var(--gold), #B8922A);
+            color: #3A2A10;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.3s;
+            letter-spacing: 1px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201,169,110,0.35);
+        }
+
+        .cancel-btn {
+            flex: 1;
+            background: var(--blush);
+            color: var(--burgundy);
+            padding: 13px;
+            border: 1.5px solid rgba(196,132,154,0.3);
+            border-radius: 10px;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.3s;
+            letter-spacing: 1px;
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cancel-btn:hover { background: #EDD8DE; transform: translateY(-2px); }
+
+        footer {
+            background: var(--burgundy-dark);
+            color: rgba(240,228,204,0.3);
+            text-align: center; padding: 16px;
+            font-size: 10px; letter-spacing: 2px; margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span class="cursive">Event Management</span>
+            <span class="sub">System · 2026</span>
+        </div>
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">🌸</div>
+            <div class="sidebar-username">Ume Habiba</div>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Main</div>
+            <a href="/" class="nav-link"><div class="icon">🏠</div> Home</a>
+            <a href="/customers" class="nav-link active"><div class="icon">👥</div> Customers</a>
+            <a href="/events" class="nav-link"><div class="icon">🎪</div> Events</a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Manage</div>
+            <a href="/bookings" class="nav-link"><div class="icon">📋</div> Bookings</a>
+            <a href="/payments" class="nav-link"><div class="icon">💳</div> Payments</a>
+            <a href="/services" class="nav-link"><div class="icon">🛎️</div> Services</a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Actions</div>
+            <a href="/add-booking" class="nav-link"><div class="icon">➕</div> Add Booking</a>
+        </div>
+        <div class="sidebar-footer">BCS 4th Semester &nbsp;·&nbsp; Group A</div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="tag">✏️ Edit Customer</div>
+            <h1>Edit Customer</h1>
+            <p>Update customer details — ID #{{ customer.CustomerID }}</p>
+        </div>
+
+        <div class="content">
+            <div class="form-box">
+                <div class="form-title">✏️ Update Details</div>
+                <div class="form-sub">Edit the fields below and save your changes</div>
+
+                <form method="POST" action="/edit-customer/{{ customer.CustomerID }}">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="fullname"
+                                value="{{ customer.FullName }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email"
+                                value="{{ customer.Email }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone"
+                            value="{{ customer.Phone }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea name="address">{{ customer.Address }}</textarea>
+                    </div>
+
+                    <div class="btn-row">
+                        <button type="submit" class="submit-btn">
+                            💾 Save Changes
+                        </button>
+                        <a href="/customers" class="cancel-btn">
+                            ← Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer>
+            Event Management System &nbsp;·&nbsp; Ume Habiba &nbsp;·&nbsp; BCS 4th Semester &nbsp;·&nbsp; 2026
+        </footer>
+    </main>
+
+</body>
+</html>
